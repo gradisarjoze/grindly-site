@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grindly - Habit Tracker</title>
+<meta name="description" content="Track habits on a grid of colored tiles. Show up, tap once, and the day fills in. Pay once for Pro. No subscription.">
+<meta property="og:title" content="Grindly: your grind, visualized.">
+<meta property="og:description" content="A habit tracker built on tile grids. Pay once, no subscription.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='13' height='13' rx='4' fill='%232E9E7E'/%3E%3Crect x='17' y='2' width='13' height='13' rx='4' fill='%232E9E7E' opacity='.5'/%3E%3Crect x='2' y='17' width='13' height='13' rx='4' fill='%232E9E7E' opacity='.7'/%3E%3Crect x='17' y='17' width='13' height='13' rx='4' fill='%232E9E7E'/%3E%3C/svg%3E">
+</head>
+<body>
+<style>
+  :root {
+    --paper: #F4F1E6; --card: #FBF8EF; --ink: #1E1B14; --muted: #6E6A5C;
+    --jade: #2E9E7E; --violet: #8E77C2; --coral: #D98A54; --sky: #59A9BD;
+    --gold: #B08D3E; --gold-2: #CDA553; --line: #E3DECB; --empty: #E8E3D0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink);
+         font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  .serif { font-family: ui-serif, "New York", Georgia, serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 40px 24px 72px; }
+  h1 { font-family: ui-serif, "New York", Georgia, serif; font-size: clamp(2.2rem, 6vw, 3.1rem);
+       line-height: 1.1; margin: 0.35em 0 0.3em; text-wrap: balance; }
+  h2 { font-family: ui-serif, "New York", Georgia, serif; font-size: 1.55rem; line-height: 1.2; margin: 0 0 10px; }
+  p { max-width: 62ch; }
+  .muted { color: var(--muted); }
+  .eyebrow { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em;
+             text-transform: uppercase; color: var(--jade); margin: 26px 0 0; }
+
+  /* ---- Hero tile field ---- */
+  #field { display: grid; grid-template-columns: repeat(35, 1fr); gap: 3px;
+           touch-action: pan-y; cursor: crosshair; }
+  #field .t { aspect-ratio: 1; border-radius: 18%; background: var(--empty);
+              transition: background 0.9s ease, transform 0.25s ease; }
+  #field .t.flash { background: var(--flash, var(--jade)); transition: background 0.12s; }
+  #field .t.on { background: var(--jade); opacity: var(--o, 1); transition: background 0.12s; }
+  #field .t.paint { background: var(--p); transition: background 0.12s; transform: scale(1.12); }
+  .hint { font-size: 0.8rem; color: var(--muted); margin: 10px 0 0; min-height: 1.2em; }
+
+  .cta-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 18px; }
+  .button { display: inline-block; background: var(--jade); color: #fff; font-weight: 600;
+            padding: 14px 28px; border-radius: 13px; text-decoration: none; }
+  .button:hover { filter: brightness(1.06); }
+  .cta-note { font-size: 0.85rem; color: var(--muted); }
+
+  /* ---- Phone section ---- */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; margin-top: 90px; }
+  @media (max-width: 620px) { .split { grid-template-columns: 1fr; } }
+  .phone { width: min(270px, 80%); margin: 0 auto; border-radius: 42px; padding: 10px;
+           background: #1E1B14; box-shadow: 0 24px 60px rgba(30,27,20,0.22); }
+  .phone img { display: block; width: 100%; border-radius: 33px; }
+
+  /* ---- Feature trio ---- */
+  .trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 90px; }
+  @media (max-width: 620px) { .trio { grid-template-columns: 1fr; } }
+  .feature { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 22px; }
+  .feature h3 { font-family: ui-serif, "New York", Georgia, serif; font-size: 1.1rem; margin: 14px 0 6px; }
+  .feature p { font-size: 0.9rem; color: var(--muted); margin: 0; }
+  .mini { display: grid; grid-template-columns: repeat(7, 13px); gap: 3px; }
+  .mini span { width: 13px; height: 13px; border-radius: 3.5px; background: var(--empty); }
+  .streakno { font-family: ui-serif, "New York", Georgia, serif; font-size: 1.9rem; font-weight: 700;
+              color: var(--jade); line-height: 1; }
+  .widgetcard { width: 76px; padding: 8px; background: var(--paper); border: 1px solid var(--line);
+                border-radius: 12px; }
+  .widgetcard .mini { grid-template-columns: repeat(4, 12px); }
+  .widgetcard .mini span { width: 12px; height: 12px; }
+
+  footer { margin-top: 72px; padding-top: 20px; border-top: 1px solid var(--line);
+           font-size: 0.85rem; color: var(--muted); }
+  footer a { color: var(--muted); }
+  a { color: var(--jade); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+</style>
+
+<main>
+  <div id="field" aria-hidden="true"></div>
+  <p class="hint" id="hint"></p>
+
+  <p class="eyebrow">Grindly</p>
+  <h1>Your grind, visualized.</h1>
+  <p class="muted">Grindly tracks habits on a grid of colored tiles. Show up, tap once, and today
+     fills in. Skip a day and the gap stays on the record. The grid doesn't flatter you, which is
+     exactly why a full month of it feels so good.</p>
+
+  <div class="cta-row">
+    <a class="button" href="https://apps.apple.com/app/id6759507317">Download on the App&nbsp;Store</a>
+    <span class="cta-note">Free to start · Pay once for Pro · No subscription</span>
+  </div>
+
+  <div class="split">
+    <div class="phone"><img src="dashboard.png" alt="Grindly dashboard: habit cards with color tile grids, streaks, and stats"></div>
+    <div>
+      <h2>The grid is the app.</h2>
+      <p class="muted">Each habit gets its own grid. Tap the checkmark and today fills in. The card
+         shows your streak, your best run, and your completion rate. Widgets put the checkmark on
+         your home screen, and when the last habit of the day is done, Grindly throws a small
+         party.</p>
+    </div>
+  </div>
+
+  <div class="trio">
+    <div class="feature">
+      <div class="mini" id="mini1"></div>
+      <h3>Color grids</h3>
+      <p>Twelve colors, tuned to sit well on paper. Pick one per habit and let the history accumulate.</p>
+    </div>
+    <div class="feature">
+      <div><span class="streakno">12</span> <span class="muted" style="font-size:0.85rem">day streak</span></div>
+      <div class="mini" id="mini2" style="margin-top:10px"></div>
+      <h3>Streaks</h3>
+      <p>A reminder at your time and a nudge at midday, so the chain survives your busy days.</p>
+    </div>
+    <div class="feature">
+      <div class="widgetcard"><div class="mini" id="mini3"></div></div>
+      <h3>Widgets &amp; celebrations</h3>
+      <p>Tap habits done from your home screen. Finish all of them and the confetti falls.</p>
+    </div>
+  </div>
+
+  <footer>
+    <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Use</a> · <a href="https://github.com/gradisarjoze/grindly-site/issues">Support</a>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var COLS = 35, ROWS = 11, WORD_ROW = 3;
+  var GLYPHS = {
+    G: ["0111","1000","1011","1001","0111"],
+    R: ["1110","1001","1110","1010","1001"],
+    I: ["1","1","1","1","1"],
+    N: ["1001","1101","1011","1001","1001"],
+    D: ["1110","1001","1001","1001","1110"],
+    L: ["100","100","100","100","111"],
+    Y: ["101","101","010","010","010"]
+  };
+  var word = "GRINDLY", cells = {};
+  var width = 0;
+  for (var i = 0; i < word.length; i++) width += GLYPHS[word[i]][0].length + 1;
+  width -= 1;
+  var startCol = Math.floor((COLS - width) / 2), col = startCol;
+  for (var i = 0; i < word.length; i++) {
+    var g = GLYPHS[word[i]];
+    for (var r = 0; r < 5; r++)
+      for (var c = 0; c < g[r].length; c++)
+        if (g[r][c] === "1") cells[(WORD_ROW + r) + "," + (col + c)] = true;
+    col += g[0].length + 1;
+  }
+
+  var field = document.getElementById("field");
+  var hint = document.getElementById("hint");
+  var palette = ["var(--jade)", "var(--violet)", "var(--coral)", "var(--sky)"];
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var painted = 0;
+
+  for (var r = 0; r < ROWS; r++) {
+    for (var c = 0; c < COLS; c++) {
+      var t = document.createElement("div");
+      t.className = "t";
+      var isWord = cells[r + "," + c];
+      if (isWord) t.style.setProperty("--o", (0.78 + ((r * 7 + c * 5) % 5) * 0.055).toFixed(2));
+      if (reduced) {
+        if (isWord) t.classList.add("on");
+      } else {
+        (function (t, isWord, delay, flashColor) {
+          setTimeout(function () {
+            if (isWord) { t.classList.add("on"); }
+            else {
+              t.style.setProperty("--flash", flashColor);
+              t.classList.add("flash");
+              setTimeout(function () { t.classList.remove("flash"); }, 220);
+            }
+          }, delay);
+        })(t, isWord, 350 + (r + c) * 26, palette[(r + c) % palette.length]);
+      }
+      field.appendChild(t);
+    }
+  }
+
+  function paint(el) {
+    if (!el || !el.classList || !el.classList.contains("t") || el.classList.contains("on")) return;
+    if (el.classList.contains("paint")) return;
+    el.style.setProperty("--p", palette[Math.floor(Math.random() * palette.length)]);
+    el.classList.add("paint");
+    painted++;
+    hint.textContent = "You've filled " + painted + " tile" + (painted === 1 ? "" : "s") + ". In the app, each one is a day.";
+    setTimeout(function () { el.classList.remove("paint"); }, 900);
+  }
+  field.addEventListener("pointermove", function (e) {
+    paint(document.elementFromPoint(e.clientX, e.clientY));
+  });
+  field.addEventListener("pointerdown", function (e) {
+    paint(document.elementFromPoint(e.clientX, e.clientY));
+  });
+  setTimeout(function () {
+    if (!painted) hint.textContent = "The tiles are paintable. Try it.";
+  }, reduced ? 800 : 2600);
+
+  function mini(id, pattern) {
+    var el = document.getElementById(id);
+    var colors = { j: "var(--jade)", v: "var(--violet)", c: "var(--coral)", s: "var(--sky)", ".": "" };
+    for (var i = 0; i < pattern.length; i++) {
+      var sp = document.createElement("span");
+      var k = pattern[i];
+      if (colors[k]) sp.style.background = colors[k];
+      el.appendChild(sp);
+    }
+  }
+  mini("mini1", "jv.cjs.vjc.jvjs.cj.vj");
+  mini("mini2", "jjjjjjj");
+  mini("mini3", "jj.jj.j.jjw".replace("w", "j"));
+})();
+</script>
+
+</body>
+</html>
