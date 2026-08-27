@@ -3,11 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Grindly - Habit Tracker</title>
+<title>Grindly, a habit tracker on a color grid</title>
 <meta name="description" content="Track habits on a grid of colored tiles. Show up, tap once, and the day fills in. Pay once for Pro. No subscription.">
+<link rel="canonical" href="https://grindly.gn1.io/">
 <meta property="og:title" content="Grindly: your grind, visualized.">
 <meta property="og:description" content="A habit tracker built on tile grids. Pay once, no subscription.">
+<meta property="og:image" content="https://grindly.gn1.io/dashboard.png">
+<meta property="og:url" content="https://grindly.gn1.io/">
+<meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='13' height='13' rx='4' fill='%232E9E7E'/%3E%3Crect x='17' y='2' width='13' height='13' rx='4' fill='%232E9E7E' opacity='.5'/%3E%3Crect x='2' y='17' width='13' height='13' rx='4' fill='%232E9E7E' opacity='.7'/%3E%3Crect x='17' y='17' width='13' height='13' rx='4' fill='%232E9E7E'/%3E%3C/svg%3E">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Grindly","operatingSystem":"iOS","applicationCategory":"HealthApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://grindly.gn1.io/"}
+</script>
 </head>
 <body>
 <style>
@@ -52,8 +59,8 @@
            background: #1E1B14; box-shadow: 0 24px 60px rgba(30,27,20,0.22); }
   .phone img { display: block; width: 100%; border-radius: 33px; }
 
-  /* ---- Feature trio ---- */
-  .trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 90px; }
+  /* ---- Feature cards ---- */
+  .trio { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 90px; }
   @media (max-width: 620px) { .trio { grid-template-columns: 1fr; } }
   .feature { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 22px; }
   .feature h3 { font-family: ui-serif, "New York", Georgia, serif; font-size: 1.1rem; margin: 14px 0 6px; }
@@ -66,6 +73,12 @@
                 border-radius: 12px; }
   .widgetcard .mini { grid-template-columns: repeat(4, 12px); }
   .widgetcard .mini span { width: 12px; height: 12px; }
+
+  .pay { margin-top: 90px; background: var(--card); border: 1px solid var(--line);
+         border-radius: 18px; padding: 28px; }
+  .pay p { margin: 0 0 0.7em; }
+  .pay .cta-row { margin-top: 14px; }
+  .pay .follow { font-size: 0.9rem; margin: 16px 0 0; }
 
   footer { margin-top: 72px; padding-top: 20px; border-top: 1px solid var(--line);
            font-size: 0.85rem; color: var(--muted); }
@@ -85,16 +98,16 @@
 
   <div class="cta-row">
     <a class="button" href="https://apps.apple.com/app/id6759507317">Download on the App&nbsp;Store</a>
-    <span class="cta-note">Free to start · Pay once for Pro · No subscription</span>
+    <span class="cta-note">Free to start. Pay once for Pro. No subscription.</span>
   </div>
 
   <div class="split">
     <div class="phone"><img src="dashboard.png" alt="Grindly dashboard: habit cards with color tile grids, streaks, and stats"></div>
     <div>
       <h2>The grid is the app.</h2>
-      <p class="muted">Each habit gets its own grid. Tap the checkmark and today fills in. The card
+      <p class="muted">Each habit gets its own 16-week grid. Tap the checkmark and today fills in. The card
          shows your streak, your best run, and your completion rate. Widgets put the checkmark on
-         your home screen, and when the last habit of the day is done, Grindly throws a small
+         your Home Screen and Lock Screen. When the last habit of the day is done, Grindly throws a small
          party.</p>
     </div>
   </div>
@@ -109,17 +122,31 @@
       <div><span class="streakno">12</span> <span class="muted" style="font-size:0.85rem">day streak</span></div>
       <div class="mini" id="mini2" style="margin-top:10px"></div>
       <h3>Streaks</h3>
-      <p>A reminder at your time and a nudge at midday, so the chain survives your busy days.</p>
+      <p>A reminder at your time and a nudge at midday, so the chain survives busy days. A miss is a gap, not a lecture.</p>
+    </div>
+    <div class="feature">
+      <div class="mini" id="mini4"></div>
+      <h3>Jokers</h3>
+      <p>Every 7-day streak mints a joker. You can hold two. Play one and yesterday turns gold: the streak holds, the miss stays on the record. Earning jokers is free. Playing one is Pro. <a href="jokers.html">How jokers work</a></p>
     </div>
     <div class="feature">
       <div class="widgetcard"><div class="mini" id="mini3"></div></div>
-      <h3>Widgets &amp; celebrations</h3>
-      <p>Tap habits done from your home screen. Finish all of them and the confetti falls.</p>
+      <h3>Widgets and celebrations</h3>
+      <p>Tap habits done from your Home Screen. Finish all of them and the confetti falls. iCloud keeps the grids in sync across your devices.</p>
     </div>
   </div>
 
+  <div class="pay">
+    <h2>Pay once.</h2>
+    <p class="muted">One habit is free forever. Grindly Pro is a one-time purchase ($3.99 US / 3,99 EUR in Slovenia). It unlocks unlimited habits, widgets, playing jokers, and data export. No trial that becomes a bill. No monthly fee.</p>
+    <div class="cta-row">
+      <a class="button" href="https://apps.apple.com/app/id6759507317">Download on the App&nbsp;Store</a>
+    </div>
+    <p class="muted follow">Questions: <a href="faq.html">FAQ</a>. Support: <a href="https://github.com/gradisarjoze/grindly-site/issues">GitHub issues</a>.</p>
+  </div>
+
   <footer>
-    <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Use</a> · <a href="https://github.com/gradisarjoze/grindly-site/issues">Support</a>
+    <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Use</a> · <a href="faq.html">FAQ</a> · <a href="https://github.com/gradisarjoze/grindly-site/issues">Support</a>
   </footer>
 </main>
 
@@ -199,7 +226,7 @@
 
   function mini(id, pattern) {
     var el = document.getElementById(id);
-    var colors = { j: "var(--jade)", v: "var(--violet)", c: "var(--coral)", s: "var(--sky)", ".": "" };
+    var colors = { j: "var(--jade)", v: "var(--violet)", c: "var(--coral)", s: "var(--sky)", g: "var(--gold)", ".": "" };
     for (var i = 0; i < pattern.length; i++) {
       var sp = document.createElement("span");
       var k = pattern[i];
@@ -210,6 +237,7 @@
   mini("mini1", "jv.cjs.vjc.jvjs.cj.vj");
   mini("mini2", "jjjjjjj");
   mini("mini3", "jj.jj.j.jjw".replace("w", "j"));
+  mini("mini4", "jjjjjjg");
 })();
 </script>
 
