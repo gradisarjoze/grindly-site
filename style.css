@@ -74,14 +74,13 @@ footer {
 }
 footer a { color: var(--muted); }
 
-.button {
+.app-store {
   display: inline-block;
-  background: var(--jade);
-  color: #fff;
-  font-weight: 600;
-  padding: 13px 26px;
-  border-radius: 12px;
-  text-decoration: none;
+  line-height: 0;
   margin-top: 10px;
 }
-.button:hover { filter: brightness(1.05); }
+.app-store img {
+  height: 40px;
+  width: auto;
+  display: block;
+}
